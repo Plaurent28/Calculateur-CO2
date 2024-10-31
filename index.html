@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            padding: 20px;
+        }
+        .calculator {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+        .section {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section-impact {
+            color: #4169e1;
+            font-size: 18px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .input-group label {
+            display: block;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #333;
+            color: #fff;
+            font-size: 24px;
+            width: 200px;
+            padding: 5px 0;
+        }
+        .input-group .unit {
+            color: #666;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .impact-bar {
+            height: 4px;
+            background: #222;
+            border-radius: 2px;
+            margin-top: 10px;
+            position: relative;
+        }
+        .impact-fill {
+            height: 100%;
+            background: #4169e1;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+        .results {
+            grid-column: 1 / -1;
+        }
+        .main-result {
+            font-size: 42px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        .main-result .unit {
+            font-size: 24px;
+            color: #666;
+        }
+        .comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 8px;
+        }
+        .comparison-item {
+            text-align: center;
+        }
+        .comparison-value {
+            font-size: 24px;
+            color: #4169e1;
+            margin: 5px 0;
+        }
+        .comparison-label {
+            color: #666;
+            font-size: 14px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #222;
+        }
+        .eco-tip {
+            color: #4caf50;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .warning {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="section">
+            <div class="section-title">
+                Transport quotidien
+                <span class="section-impact"><span id="transportImpact">0</span> kg CO₂/an</span>
+            </div>
+            
+            <div class="input-group">
+                <label>Voiture - km/an</label>
+                <input type="number" id="carKm" value="15000">
+                <div class="unit">KM</div>
+                <div class="impact-bar">
+                    <div class="impact-fill" id="car-impact"></div>
+                </div>
+                <div class="eco-tip" id="car-tip">Conseil : Pensez au covoiturage pour réduire votre impact</div>
+            </div>
+
+            <div class="input-group">
+                <label>Transport en commun - trajets/semaine</label>
+                <input type="number" id="publicTransport" value="10">
+                <div class="unit">TRAJETS</div>
+                <div class="impact-bar">
+                    <div class="impact-fill" id="transport-impact"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                Logement
+                <span class="section-impact"><span id="housingImpact">0</span> kg CO₂/an</span>
+            </div>
+            
+            <div class="input-group">
+                <label>Surface habitable</label>
+                <input type="number" id="homeSize" value="75">
+                <div class="unit">M²</div>
+            </div>
+
+            <div class="input-group">
+                <label>Consommation électrique/mois</label>
+                <input type="number" id="electricity" value="250">
+                <div class="unit">KWH</div>
+                <div class="impact-bar">
+                    <div class="impact-fill" id="electricity-impact"></div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Consommation gaz/mois</label>
+                <input type="number" id="gas" value="100">
+                <div class="unit">KWH</div>
+                <div class="impact-bar">
+                    <div class="impact-fill" id="gas-impact"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                Alimentation
+                <span class="section-impact"><span id="foodImpact">0</span> kg CO₂/an</span>
+            </div>
+            
+            <div class="input-group">
+                <label>Repas avec viande rouge/semaine</label>
+                <input type="number" id="redMeat" value="3">
+                <div class="unit">REPAS</div>
+                <div class="impact-bar">
+                    <div class="impact-fill" id="meat-impact"></div>
+                </div>
+                <div class="eco-tip" id="meat-tip">Conseil : Réduire la viande rouge a un impact majeur</div>
+            </div>
+
+            <div class="input-group">
+                <label>Repas végétariens/semaine</label>
+                <input type="number" id="vegetarian" value="4">
+                <div class="unit">REPAS</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                Consommation
+                <span class="section-impact"><span id="consumptionImpact">0</span> kg CO₂/an</span>
+            </div>
+            
+            <div class="input-group">
+                <label>Budget vêtements/mois</label>
+                <input type="number" id="clothing" value="100">
+                <div class="unit">EUR</div>
+                <div class="impact-bar">
+                    <div class="impact-fill" id="clothing-impact"></div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Budget électronique/an</label>
+                <input type="number" id="electronics" value="1000">
+                <div class="unit">EUR</div>
+                <div class="impact-bar">
+                    <div class="impact-fill" id="electronics-impact"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results">
+            <div class="main-result">
+                <span id="totalImpact">0</span>
+                <span class="unit">tonnes CO₂/an</span>
+            </div>
+
+            <div class="comparison">
+                <div class="comparison-item">
+                    <div class="comparison-label">Moyenne française</div>
+                    <div class="comparison-value">9.0 t</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-label">Votre empreinte</div>
+                    <div class="comparison-value"><span id="yourImpact">0</span> t</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="comparison-label">Objectif 2030</div>
+                    <div class="comparison-value">5.0 t</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="detail-row">
+                    <span class="detail-label">Transport</span>
+                    <span><span id="transportPercent">0</span>% de votre empreinte</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Logement</span>
+                    <span><span id="housingPercent">0</span>% de votre empreinte</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Alimentation</span>
+                    <span><span id="foodPercent">0</span>% de votre empreinte</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Consommation</span>
+                    <span><span id="consumptionPercent">0</span>% de votre empreinte</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputs = document.querySelectorAll('input');
+        
+        function calculateCarbonFootprint() {
+            // Transport calculations
+            const carKm = parseFloat(document.getElementById('carKm').value) || 0;
+            const publicTransport = parseFloat(document.getElementById('publicTransport').value) || 0;
+            const transportImpact = (carKm * 0.2) + (publicTransport * 52 * 0.5);
+
+            // Housing calculations
+            const homeSize = parseFloat(document.getElementById('homeSize').value) || 0;
+            const electricity = parseFloat(document.getElementById('electricity').value) || 0;
+            const gas = parseFloat(document.getElementById('gas').value) || 0;
+            const housingImpact = (homeSize * 15) + (electricity * 12 * 0.1) + (gas * 12 * 0.2);
+
+            // Food calculations
+            const redMeat = parseFloat(document.getElementById('redMeat').value) || 0;
+            const vegetarian = parseFloat(document.getElementById('vegetarian').value) || 0;
+            const foodImpact = (redMeat * 52 * 7) + (vegetarian * 52 * 1);
+
+            // Consumption calculations
+            const clothing = parseFloat(document.getElementById('clothing').value) || 0;
+            const electronics = parseFloat(document.getElementById('electronics').value) || 0;
+            const consumptionImpact = (clothing * 12 * 0.5) + (electronics * 0.5);
+
+            // Total impact
+            const totalImpact = transportImpact + housingImpact + foodImpact + consumptionImpact;
+            const totalTonnes = totalImpact / 1000;
+
+            // Calculate percentages
+            const transportPercent = Math.round((transportImpact / totalImpact) * 100);
+            const housingPercent = Math.round((housingImpact / totalImpact) * 100);
+            const foodPercent = Math.round((foodImpact / totalImpact) * 100);
+            const consumptionPercent = Math.round((consumptionImpact / totalImpact) * 100);
+
+            // Update impact bars
+            document.getElementById('car-impact').style.width = `${(carKm * 0.2 / transportImpact) * 100}%`;
+            document.getElementById('transport-impact').style.width = `${(publicTransport * 52 * 0.5 / transportImpact) * 100}%`;
+            document.getElementById('electricity-impact').style.width = `${(electricity * 12 * 0.1 / housingImpact) * 100}%`;
+            document.getElementById('gas-impact').style.width = `${(gas * 12 * 0.2 / housingImpact) * 100}%`;
+            document.getElementById('meat-impact').style.width = `${(redMeat * 52 * 7 / foodImpact) * 100}%`;
+            document.getElementById('clothing-impact').style.width = `${(clothing * 12 * 0.5 / consumptionImpact) * 100}%`;
+            document.getElementById('electronics-impact').style.width = `${(electronics * 0.5 / consumptionImpact) * 100}%`;
+
+            // Show/hide tips based on impact
+            document.getElementById('car-tip').style.display = carKm > 15000 ? 'block' : 'none';
+            document.getElementById('meat-tip').style.display = redMeat > 3 ? 'block' : 'none';
+
+            // Update displays
+            document.getElementById('transportImpact').textContent = Math.round(transportImpact);
+            document.getElementById('housingImpact').textContent = Math.round(housingImpact);
+            document.getElementById('foodImpact').textContent = Math.round(foodImpact);
+            document.getElementById('consumptionImpact').textContent = Math.round(consumptionImpact);
+            document.getElementById('totalImpact').textContent = totalTonnes.toFixed(1);
+            document.getElementById('yourImpact').textContent = totalTonnes.toFixed(1);
+            document.getElementById('transportPercent').textContent = transportPercent;
+            document.getElementById('housingPercent').textContent = housingPercent;
+            document.getElementById('foodPercent').textContent = foodPercent;
+            document.getElementById('consumptionPercent').textContent = consumptionPercent;
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', calculateCarbonFootprint);
+        });
+
+        calculateCarbonFootprint();
+    </script>
+</body>
+</html>
